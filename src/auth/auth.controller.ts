@@ -1,10 +1,19 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import SignupDto from './dto/signup.dto';
 import LoginDto from './dto/login.dto';
 import LocalGuard from './guards/local.guard';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import GoogleGuard from './guards/google.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -38,5 +47,27 @@ export class AuthController {
       lastName: user.lastName,
       access_token,
     };
+  }
+
+  @UseGuards(GoogleGuard)
+  @Get('google')
+  googleLogin() {}
+
+  @UseGuards(GoogleGuard)
+  @Get('redirect')
+  async googleRedirect(@Req() req: Request, @Res() res: Response) {
+    const user = req.user as {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+    };
+    const access_token = await this.jwt.signAsync({
+      email: user.email,
+      sub: user.id,
+    });
+    res.redirect(
+      `http://localhost:5173/?token=${access_token}&&email=${user.email}&&firstName=${user.firstName}&&lastName=${user.lastName}`,
+    );
   }
 }

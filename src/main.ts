@@ -7,6 +7,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
+  app.enableCors();
+
   const config = new DocumentBuilder()
     .setTitle('Auth-app')
     .setDescription('This is an app that uses passport auth')

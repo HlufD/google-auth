@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import User from './dto/signup.dto';
 import { JwtService } from '@nestjs/jwt';
+import SignupDto from './dto/signup.dto';
 
 @Injectable()
 export class AuthService {
@@ -85,5 +86,33 @@ export class AuthService {
 
   async compare(password: string, hash: string) {
     return await bcrypt.compare(password, hash);
+  }
+
+  async validateGoogleUser(googleUser: SignupDto) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          email: googleUser.email,
+        },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+        },
+      });
+      if (user) return user;
+      return await this.prisma.user.create({
+        data: googleUser,
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }
