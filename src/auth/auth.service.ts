@@ -59,9 +59,11 @@ export class AuthService {
           id: true,
           password: true,
           email: true,
+          firstName: true,
+          lastName: true,
         },
       });
-      if (!user) throw new NotFoundException('invalid credentials');
+      if (!user) throw new UnauthorizedException('invalid credentials');
 
       const isPasswordValid = await this.compare(password, user.password);
 

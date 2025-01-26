@@ -21,11 +21,22 @@ export class AuthController {
   @UseGuards(LocalGuard)
   @Post('login')
   async login(@Body() body: LoginDto, @Req() req: Request) {
-    const user = req.user as { id: string; email: string };
+    const user = req.user as {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+    };
     const access_token = await this.jwt.signAsync({
       email: user.email,
       sub: user.id,
     });
-    return { access_token };
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      access_token,
+    };
   }
 }
