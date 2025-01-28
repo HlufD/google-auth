@@ -8,6 +8,7 @@ import LocalStrategy from './strategies/local.strategy';
 import JwtStrategy from './strategies/jwt.strategy';
 import GoogleStrategy from './strategies/google.strategy';
 import JwtCookieStrategy from './strategies/jwt.cookie.strategy';
+import GithubStrategy from './strategies/github.strategy';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import JwtCookieStrategy from './strategies/jwt.cookie.strategy';
     JwtStrategy,
     GoogleStrategy,
     JwtCookieStrategy,
+    GithubStrategy,
   ],
 })
 export class AuthModule {}
