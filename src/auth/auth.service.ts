@@ -115,4 +115,32 @@ export class AuthService {
       throw error;
     }
   }
+
+  async validateGithubUser(githubUser: SignupDto) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          email: githubUser.email,
+        },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+        },
+      });
+      if (user) return user;
+      return await this.prisma.user.create({
+        data: githubUser,
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
