@@ -66,8 +66,22 @@ export class AuthController {
       email: user.email,
       sub: user.id,
     });
+
+    // set token in cookie
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24,
+      secure: process.env.NODE_ENV === 'production',
+    });
     res.redirect(
-      `http://localhost:5173/?token=${access_token}&&email=${user.email}&&firstName=${user.firstName}&&lastName=${user.lastName}`,
+      `http://localhost:5173/?email=${user.email}&&firstName=${user.firstName}&&lastName=${user.lastName}`,
     );
+  }
+
+  @Post('logout')
+  logout(@Res() res: Response) {
+    res.clearCookie('access_token');
+    res.send('Logged out');
   }
 }
